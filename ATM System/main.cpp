@@ -19,6 +19,7 @@ bool expDateVerification(ATMcard &aCard);
 
 bool balanceCheck(ATMprocess &aProc);
 void printOR(ATMprocess &aProc, long long cardAccount);
+int loopToMain();
 
 int main(){
 
@@ -101,23 +102,34 @@ int main(){
 
     if(!isExpired){
 
-        int trans;
+        int ans_NewTransaction = 1;
 
-        cout<<"ATM Transactions"<<endl;
-        cout<<"1.Balance Check"<<endl;
-        cout<<"2.Withdraw Cash"<<endl;
-        cout<<"Choose transaction: ";
-        cin>>trans;
+        while(ans_NewTransaction == 1){
 
-        switch(trans){
-        case 1:
-            aProc.balanceCheck(cardAccount);
-            printOR(aProc, cardAccount);
-            break;
-        case 2:
-            cout<<"A work in progress.";
-        default:
-            cout<<"Invalid input."<<endl;
+            int trans;
+
+            cout<<"ATM Transactions"<<endl;
+            cout<<"1.Balance"<<endl;
+            cout<<"2.Withdraw"<<endl;
+            cout<<"3.Deposit"<<endl;
+            cout<<"Choose transaction: ";
+            cin>>trans;
+
+            switch(trans){
+            case 1:
+                aProc.balanceCheck(cardAccount);
+                printOR(aProc, cardAccount);
+                ans_NewTransaction = loopToMain();
+                break;
+            case 2:
+                cout<<"A work in progress.";
+                break;
+            case 3:
+                cout<<"A work in progress.";
+                break;
+            default:
+                cout<<"Invalid input."<<endl;
+            }
         }
     }
 
@@ -175,8 +187,18 @@ void printOR(ATMprocess &aProc, long long cardAccount){
 
     if(ans==1){
         cout<<"*******************************************************"<<endl;
+        cout<<"                   BANK RECEIPT                        "<<endl;
+        cout<<"*******************************************************"<<endl;
         aProc.printReceipt(cardAccount);
-    }else{
-        cout<<"This part should loop to main menu or not? I'm sleepy."<<endl;
     }
+}
+
+int loopToMain(){
+    int ansNewTransaction;
+    cout<<"Do you want to perform another transaction?"<<endl;
+    cout<<"1.Yes \t 2.No"<<endl;
+    cout<<"Enter Number: ";
+    cin>>ansNewTransaction;
+
+    return ansNewTransaction;
 }

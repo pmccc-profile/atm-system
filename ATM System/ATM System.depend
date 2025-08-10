@@ -1,5 +1,5 @@
 # depslib dependency file v1.0
-1754508974 source:c:\users\boopi\documents\projects\cpp\atm system\atmprocess.cpp
+1754829053 source:c:\users\boopi\documents\projects\cpp\atm system\atmprocess.cpp
 	"ATMprocess.h"
 	<iostream>
 	<string>
@@ -7,11 +7,11 @@
 	<ctime>
 	<iomanip>
 
-1754508888 c:\users\boopi\documents\projects\cpp\atm system\atmprocess.h
+1754824015 c:\users\boopi\documents\projects\cpp\atm system\atmprocess.h
 	"ATMcard.h"
 	<string>
 
-1754509434 source:c:\users\boopi\documents\projects\cpp\atm system\main.cpp
+1754830536 source:c:\users\boopi\documents\projects\cpp\atm system\main.cpp
 	<iostream>
 	<sstream>
 	<cstdlib>

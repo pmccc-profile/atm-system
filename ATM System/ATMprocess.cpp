@@ -7,7 +7,7 @@
 
 using namespace std;
 
-ATMprocess::ATMprocess() : withdrawAmount(0)
+ATMprocess::ATMprocess() : withdrawAmount(0), depositAmount(0)
 {
     //ctor
 }
@@ -44,5 +44,36 @@ bool ATMprocess::printReceipt(long long cardNumber){
 
 
     return readRecord(ss.str());
+}
 
+void ATMprocess::setWithdrawalAmt(int withdrawAmt){
+    withdrawAmount = withdrawAmt;
+}
+
+int ATMprocess::getWithdrawalAmt(){
+    return withdrawAmount;
+}
+
+void ATMprocess::setDepositAmt(int depositAmt){
+    depositAmount = depositAmt;
+}
+
+int ATMprocess::getDepositAmt(){
+    return depositAmount;
+}
+
+bool ATMprocess::updateBalance(char t){
+
+    long long accountNum = getAcctNum();
+    stringstream ss;
+
+    if(t=='w'){
+        int withdrawAmt = getWithdrawalAmt();
+        ss<<"UPDATE Account SET AccountBalance = (AccountBalance - "<<withdrawAmt<<") WHERE AccountNumber = "<<accountNum<<" AND AccountBalance >= "<<withdrawAmt<<";";
+    }else if(t=='d'){
+        int depositAmt = getDepositAmt();
+        ss<<"UPDATE Account SET AccountBalance = (AccountBalance + "<<depositAmt<<") WHERE AccountNumber = "<<accountNum<<";";
+    }
+
+    return updateRecord(ss.str());
 }

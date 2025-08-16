@@ -7,7 +7,7 @@ using namespace std;
 
 
 //using (:) member initializer to initialize parameters directly on constructor
-ATMsql::ATMsql() : dbName("dbATM.db"), dbcon(nullptr)
+ATMsql::ATMsql() : dbcon(nullptr), dbName("dbATM.db")
 {
     //automatically call/trigger the functions
     createConnection();
@@ -127,7 +127,8 @@ bool ATMsql::readRecord(string sqlRead){
 
 bool ATMsql::updateRecord(string sqlUpdate){
     if(sqlite3_exec(dbcon,sqlUpdate.c_str(),nullptr,nullptr,&errMsg)==SQLITE_OK){
-        return true;
+        int changes = sqlite3_changes(dbcon);
+        return changes > 0;
     }else{
         cerr<<"UPDATE error. "<<errMsg<<endl;
         sqlite3_free(errMsg);

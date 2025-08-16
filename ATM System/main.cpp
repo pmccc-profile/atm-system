@@ -19,6 +19,8 @@ bool expDateVerification(ATMcard &aCard);
 
 bool balanceCheck(ATMprocess &aProc);
 void printOR(ATMprocess &aProc, long long cardAccount);
+void withdraw(ATMprocess &aProc);
+void deposit(ATMprocess &aProc);
 int loopToMain();
 
 int main(){
@@ -52,7 +54,7 @@ int main(){
     bool isExpired = true;
 
     //verify card account number
-    if(verifyAccount==true){
+    if(verifyAccount){
 
         int pin = 0;
         int pinAttempts = 1;
@@ -69,7 +71,7 @@ int main(){
             //verify card pin
             bool verifyPinNum = pinVerification(aCard);
 
-            if(verifyPinNum==true){
+            if(verifyPinNum){
                 pinCorrect = true;
                 break;
             }
@@ -84,7 +86,7 @@ int main(){
         if(pinCorrect){
             //verify card expiration date
             bool verifyExpDate = expDateVerification(aCard);
-            if(verifyExpDate==true){
+            if(verifyExpDate){
                 //proceed to ATM Process
                 isExpired = false;
             }else{
@@ -112,6 +114,7 @@ int main(){
             cout<<"1.Balance"<<endl;
             cout<<"2.Withdraw"<<endl;
             cout<<"3.Deposit"<<endl;
+            cout<<"4.Exit"<<endl;
             cout<<"Choose transaction: ";
             cin>>trans;
 
@@ -122,10 +125,17 @@ int main(){
                 ans_NewTransaction = loopToMain();
                 break;
             case 2:
-                cout<<"A work in progress.";
+                withdraw(aProc);
+                printOR(aProc, cardAccount);
+                ans_NewTransaction = 0;
                 break;
             case 3:
-                cout<<"A work in progress.";
+                deposit(aProc);
+                printOR(aProc, cardAccount);
+                ans_NewTransaction = 0;
+                break;
+            case 4:
+                exit(0);
                 break;
             default:
                 cout<<"Invalid input."<<endl;
@@ -190,6 +200,40 @@ void printOR(ATMprocess &aProc, long long cardAccount){
         cout<<"                   BANK RECEIPT                        "<<endl;
         cout<<"*******************************************************"<<endl;
         aProc.printReceipt(cardAccount);
+    }
+}
+
+void withdraw(ATMprocess &aProc){
+    int withdrawAmt;
+    char t = 'w'; //for withdraw
+
+    cout<<"Withdraw Amount: ";
+    cin>>withdrawAmt;
+
+    //set withdrawal amount
+    aProc.setWithdrawalAmt(withdrawAmt);
+
+    bool withdrawSuccess = aProc.updateBalance(t);
+
+    if(!withdrawSuccess){
+        cout<<"Insufficient funds. Try Again"<<endl;
+    }
+}
+
+void deposit(ATMprocess &aProc){
+    int depositAmt;
+    char t = 'd'; //for deposit
+
+    cout<<"Deposit Amount: ";
+    cin>>depositAmt;
+
+    //set deposit amount
+    aProc.setDepositAmt(depositAmt);
+
+    bool depositSuccess = aProc.updateBalance(t);
+
+    if(!depositSuccess){
+        cout<<"Cannot deposit. Try Again"<<endl;
     }
 }
 

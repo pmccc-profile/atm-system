@@ -14,16 +14,20 @@ class ATMprocess : public ATMcard
 
         bool balanceCheck(long long cardAcct);
 
-        void setWithdrawalAmt(int withdrawAmount);
+        void setWithdrawalAmt(int withdrawAmt);
         int getWithdrawalAmt();
 
-        void setDepositAmt(int depositAmount);
+        void setDepositAmt(int depositAmt);
         int getDepositAmt();
 
         bool printReceipt(long long cardNumber);
 
+        //for withdraw and deposit
+        bool updateBalance(char t);
+
     private:
         int withdrawAmount;
+        int depositAmount;
 };
 
 #endif // ATMPROCESS_H

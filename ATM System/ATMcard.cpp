@@ -5,7 +5,7 @@
 
 using namespace std;
 
-ATMcard::ATMcard() : acctNum(0), balance(0), expiryDate(""), pin(0)
+ATMcard::ATMcard() : acctNum(0), balance(0), pin(0) //,expiryDate("")
 {
 }
 /*
@@ -22,12 +22,14 @@ void ATMcard::setAcctNum(long long accNum){
 long long ATMcard::getAcctNum(){
     return acctNum;
 }
+/*
 void ATMcard::setExpDate(string expDate){
     expiryDate = expDate;
 }
 string ATMcard::getExpDate(){
     return expiryDate;
 }
+*/
 void ATMcard::setAcctPin(int accPin){
     pin = accPin;
 }

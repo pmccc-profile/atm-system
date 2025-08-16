@@ -17,8 +17,10 @@ class ATMcard: public ATMsql
         void setAcctNum(long long accNum);
         long long getAcctNum();
 
+        /*
         void setExpDate(string expDate);
         string getExpDate();
+        */
 
         void setAcctPin(int accPin);
         int getAcctPin();
@@ -30,7 +32,7 @@ class ATMcard: public ATMsql
     private:
         long long acctNum;
         int balance;
-        string expiryDate;
+        //string expiryDate;
         int pin;
 };
 

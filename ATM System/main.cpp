@@ -1,15 +1,19 @@
 #include <iostream>
 #include <sstream>
-#include <cstdlib> //for generating rand()
+#include <cstdlib> //for generating rand() and clrscrn()
 #include <ctime>
 #include <string>
 #include <vector>
+#include <windows.h> //clrscrn()
+#include <iomanip>
+#include <conio.h> //getch
 
 #include "ATMcard.h"
 #include "ATMprocess.h"
+#include "CenterScreen.h"
+
 
 using namespace std;
-
 
 long long cardSimulation();
 
@@ -21,143 +25,218 @@ bool balanceCheck(ATMprocess &aProc);
 void printOR(ATMprocess &aProc, long long cardAccount);
 void withdraw(ATMprocess &aProc);
 void deposit(ATMprocess &aProc);
-int loopToMain();
+void clrscrn();
+void positionCenter(const string &text);
 
 int main(){
 
-    cout<<"********************************************************************************************"<<endl;
-    cout<<"TEMPORARILY PRINTS/DISPLAYS ALL DETAILS (SENSITIVE OR NOT) FOR CHECKING/TESTING PURPOSES."<<endl;
-    cout<<"CURRENTLY FOCUSED ON FUNCTIONALITY."<<endl;
-    cout<<"ONGOING DEVELOPMENT."<<endl;
-    cout<<"********************************************************************************************"<<endl<<endl;
-
     ATMcard aCard;
-
-    cout<<"WELCOME!"<<endl<<endl;
+    CenterScreen center;
 
     //seed rand() to change each time
     srand(time(0));
 
-    //aCard.readRecord("SELECT * FROM Account"); //for checking all records
-
-    //CARD(S) SIMULATION FOR TESTING
+    //simulated card for testing
     long long cardNum = cardSimulation();
 
-    //set card account number (card inserted)
-    aCard.setAcctNum(cardNum);
-
-    //set card account number (card inserted)
-    long long cardAccount = aCard.getAcctNum();
-
-    //CODE FOR ATM VERIFICATION STARTS HERE:
-    bool verifyAccount = accountVerification(aCard);
+    int pin = 0;
+    int pinAttempts = 0;
     bool isExpired = true;
 
-    //verify card account number
-    if(verifyAccount){
+    int loopMain=1;
 
-        int pin = 0;
-        int pinAttempts = 1;
-        bool pinCorrect = false;
+    do{
+        clrscrn();
 
-        while(pinAttempts<=3){
+        cout<<endl<<endl;
+        center.positionCenter("WELCOME!");
+        cout<<endl<<endl;
 
-            cout<<"Enter PIN: ";
-            cin>>pin;
+        center.positionCenter("Simulated Card: "+ to_string(cardNum));
+        cout<<endl<<endl;
 
-            //set card pin (card inserted)
-            aCard.setAcctPin(pin);
+        //set card account number (simulated card)
+        aCard.setAcctNum(cardNum);
 
-            //verify card pin
-            bool verifyPinNum = pinVerification(aCard);
+        //get card account number (simulated card)
+        //long long cardAccount = aCard.getAcctNum();
 
-            if(verifyPinNum){
-                pinCorrect = true;
-                break;
+        //aCard.readRecord("SELECT * FROM Account"); //for checking all records
+
+        //CODE FOR ATM VERIFICATION STARTS HERE:
+        center.positionCenter("-------------------------------------------------------");
+        cout<<endl;
+        center.positionCenter("SIMULATED CARD DETAILS (PURELY FOR TESTING/CHECKING)");
+        cout<<endl;
+        center.positionCenter("-------------------------------------------------------");
+        cout<<endl;
+
+        bool verifyAccount = accountVerification(aCard);
+
+        cout<<endl;
+
+        //verify card account number
+        if(verifyAccount){
+
+            while(pinAttempts<=3){
+
+                center.positionCenter("Enter PIN: ");
+                cin>>pin;
+
+                //set card account pin
+                aCard.setAcctPin(pin);
+
+                bool verifyPinNum = pinVerification(aCard);
+
+                //verify card acocunt pin
+                if(verifyPinNum){
+                    bool verifyExpDate = expDateVerification(aCard);
+
+                    //verify card expiration date
+                    if(verifyExpDate){
+                        //card is still valid and not yet expired
+                        isExpired = false;
+                        loopMain = 0;
+                        break;
+                    }else{
+                        cout<<endl;
+                        center.positionCenter("Your card has expired.");
+                        cout<<endl;
+                        center.positionCenter("Please visit the nearest branch for renewal.");
+                        cout<<endl<<endl;
+                        loopMain = 0;
+                        break;
+                    }
+                }else{
+                    cout<<endl;
+                    center.positionCenter("The PIN you entered is incorrect. Please try again.");
+                    cout<<endl;
+                    pinAttempts++;
+                    getch(); //for pause before clrcsrn()
+                    break;
+                }
             }
             if(pinAttempts==3){
-                cout<<"Account locked out."<<endl;
+                cout<<endl;
+                center.positionCenter("Your account has been locked out.");
+                cout<<endl<<endl;
+                loopMain = 0;
                 break;
             }
-            cout<<"Incorrect Pin.\nPlease try again."<<endl;
-            pinAttempts++;
+        }else{
+            center.positionCenter("Unrecognized account.");
+            cout<<endl<<endl;
+            loopMain = 0;
+            break;
         }
-
-        if(pinCorrect){
-            //verify card expiration date
-            bool verifyExpDate = expDateVerification(aCard);
-            if(verifyExpDate){
-                //proceed to ATM Process
-                isExpired = false;
-            }else{
-               cout<<"Your card has expired.\nPlease visit the nearest branch for renewal."<<endl;
-            }
-        }
-    }else{
-        cout<<"Unrecognized account."<<endl;
-    }
+    }while(loopMain==1);
 
     //CODE FOR ATM PROCESSES STARTS HERE:
     ATMprocess aProc;
 
-    aProc.setAcctNum(cardAccount);
+    aProc.setAcctNum(cardNum);
+    long long cardNumAcct = aProc.getAcctNum();
 
     if(!isExpired){
 
-        int ans_NewTransaction = 1;
+        int loopTrans=1;
 
-        while(ans_NewTransaction == 1){
+        do{
+
+            clrscrn();
 
             int trans;
 
-            cout<<"ATM Transactions"<<endl;
-            cout<<"1.Balance"<<endl;
-            cout<<"2.Withdraw"<<endl;
-            cout<<"3.Deposit"<<endl;
-            cout<<"4.Exit"<<endl;
-            cout<<"Choose transaction: ";
+            center.positionCenter("--------------------------");
+            cout<<endl;
+            center.positionCenter("ATM Transactions");
+            cout<<endl;
+            center.positionCenter("--------------------------");
+            cout<<endl;
+            center.positionCenter("[1] Balance ");
+            cout<<endl;
+            center.positionCenter("[2] Withdraw");
+            cout<<endl;
+            center.positionCenter("[3] Deposit ");
+            cout<<endl;
+            center.positionCenter("[4] Exit    ");
+            cout<<endl;
+            center.positionCenter("--------------------------");
+            cout<<endl;
+            center.positionCenter("Choose transaction: ");
             cin>>trans;
 
             switch(trans){
-            case 1:
-                aProc.balanceCheck(cardAccount);
-                printOR(aProc, cardAccount);
-                ans_NewTransaction = loopToMain();
-                break;
-            case 2:
-                withdraw(aProc);
-                printOR(aProc, cardAccount);
-                ans_NewTransaction = 0;
-                break;
-            case 3:
-                deposit(aProc);
-                printOR(aProc, cardAccount);
-                ans_NewTransaction = 0;
-                break;
-            case 4:
-                exit(0);
-                break;
-            default:
-                cout<<"Invalid input."<<endl;
+                case 1:
+                    clrscrn();
+                    aProc.balanceCheck(cardNumAcct);
+                    printOR(aProc, cardNumAcct);
+                    break;
+                case 2:
+                    clrscrn();
+                    withdraw(aProc);
+                    printOR(aProc, cardNumAcct);
+                    break;
+                case 3:
+                    clrscrn();
+                    deposit(aProc);
+                    printOR(aProc, cardNumAcct);
+                    break;
+                case 4:
+                    loopTrans=0;
+                    break;
+                default:
+                    center.positionCenter("Invalid input.");
+                    cout<<endl;
             }
-        }
-    }
 
-    cout<<"\n\nTHANK YOU!"<<endl<<endl;
+            if(loopTrans==1){
+
+                getch();
+                clrscrn();
+
+                int newTrans;
+
+                cout<<endl<<endl;
+                center.positionCenter("Would you like to perform another transaction?");
+                cout<<endl;
+                center.positionCenter("1.Yes \t 2.No");
+                cout<<endl<<endl;
+                center.positionCenter("Enter Number: ");
+                cin>>newTrans;
+
+                if(newTrans==2){
+                    loopTrans=0;
+                    cout<<endl<<endl;
+                    break;
+                }
+            }else{
+                break;
+            }
+
+        }while(loopTrans==1);
+    }
+    center.positionCenter("-------------------------------------------------------");
+    cout<<endl;
+    center.positionCenter("REVERTED TO DEFAULT (PURELY FOR TESTING/CHECKING)");
+    cout<<endl;
+    center.positionCenter("-------------------------------------------------------");
+    cout<<endl<<endl;
+    center.positionCenter("THANK YOU!");
+    cout<<endl;
 
     return 0;
 }
 
+//FUNCTIONS BELOW
+
 long long cardSimulation(){
-    //for random card simulation
+
     //long long (LL) due to 10-digit numbers
     vector<long long> cardNumber = {8291234567LL, 8297654321LL, 8299101112LL, 8299101113LL, 8299101114LL};
 
     //generate rand() number to access random card number vector
     int cardIndex = rand() % cardNumber.size();
-
-    cout<<"Inserted Card: "<<cardNumber[cardIndex]<<endl<<endl;
-    //cin>>cardNumber[cardIndex];
 
     long long cardNum = cardNumber[cardIndex];
 
@@ -189,25 +268,49 @@ bool expDateVerification(ATMcard &aCard){
 }
 
 void printOR(ATMprocess &aProc, long long cardAccount){
+
+    CenterScreen center;
+
     int ans;
-    cout<<"Do you want receipt?"<<endl;
-    cout<<"1.Yes \t 2.No"<<endl;
-    cout<<"Enter Number: ";
+
+    cout<<endl<<endl;
+    center.positionCenter("Would you like to print a receipt?");
+    cout<<endl;
+    center.positionCenter("1.Yes \t 2.No");
+    cout<<endl<<endl;
+    center.positionCenter("Enter Number: ");
     cin>>ans;
 
+    clrscrn();
     if(ans==1){
-        cout<<"*******************************************************"<<endl;
-        cout<<"                   BANK RECEIPT                        "<<endl;
-        cout<<"*******************************************************"<<endl;
+        center.positionCenter("*******************************************************");
+        cout<<endl;
+        center.positionCenter("BANK RECEIPT");
+        cout<<endl;
+        center.positionCenter("*******************************************************");
+        cout<<endl;
+        center.positionCenter("-------------------------------------------------------");
+        cout<<endl;
         aProc.printReceipt(cardAccount);
+        cout<<endl;
+        center.positionCenter("*******************************************************");
+        cout<<endl;
+        center.positionCenter("THANK YOU FOR BANKING WITH US.");
+        cout<<endl;
+        center.positionCenter("*******************************************************");
+        cout<<endl;
     }
 }
 
 void withdraw(ATMprocess &aProc){
+
+    CenterScreen center;
+
     int withdrawAmt;
     char t = 'w'; //for withdraw
 
-    cout<<"Withdraw Amount: ";
+    cout<<endl<<endl;
+    center.positionCenter("Withdraw Amount: ");
     cin>>withdrawAmt;
 
     //set withdrawal amount
@@ -216,15 +319,21 @@ void withdraw(ATMprocess &aProc){
     bool withdrawSuccess = aProc.updateBalance(t);
 
     if(!withdrawSuccess){
-        cout<<"Insufficient funds. Try Again"<<endl;
+        cout<<endl<<endl;
+        center.positionCenter("Insufficient funds. Try Again");
+        cout<<endl;
     }
 }
 
 void deposit(ATMprocess &aProc){
+
+    CenterScreen center;
+
     int depositAmt;
     char t = 'd'; //for deposit
 
-    cout<<"Deposit Amount: ";
+    cout<<endl<<endl;
+    center.positionCenter("Deposit Amount: ");
     cin>>depositAmt;
 
     //set deposit amount
@@ -233,16 +342,17 @@ void deposit(ATMprocess &aProc){
     bool depositSuccess = aProc.updateBalance(t);
 
     if(!depositSuccess){
-        cout<<"Cannot deposit. Try Again"<<endl;
+        cout<<endl<<endl;
+        center.positionCenter("Cannot deposit. Try Again");
+        cout<<endl;
     }
 }
 
-int loopToMain(){
-    int ansNewTransaction;
-    cout<<"Do you want to perform another transaction?"<<endl;
-    cout<<"1.Yes \t 2.No"<<endl;
-    cout<<"Enter Number: ";
-    cin>>ansNewTransaction;
-
-    return ansNewTransaction;
+void clrscrn(){
+#ifdef  _WIN32
+    //for windows
+    system("cls");
+#else
+    system("clear");
+#endif
 }

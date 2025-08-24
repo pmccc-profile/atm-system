@@ -1,1 +1,2 @@
-Next Step: code the ATM processes
+Next Step: fix looping of withdraw and deposit
+	   fix OR design

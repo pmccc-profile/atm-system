@@ -1,25 +1,30 @@
 # depslib dependency file v1.0
-1755339592 source:c:\users\boopi\documents\projects\cpp\atm system\atmprocess.cpp
+1756059859 source:c:\users\boopi\documents\projects\cpp\atm system\atmprocess.cpp
 	"ATMprocess.h"
+	"CenterScreen.h"
 	<iostream>
 	<string>
 	<sstream>
 	<ctime>
 	<iomanip>
 
-1755339515 c:\users\boopi\documents\projects\cpp\atm system\atmprocess.h
+1755885813 c:\users\boopi\documents\projects\cpp\atm system\atmprocess.h
 	"ATMcard.h"
 	<string>
 
-1755339774 source:c:\users\boopi\documents\projects\cpp\atm system\main.cpp
+1756060053 source:c:\users\boopi\documents\projects\cpp\atm system\main.cpp
 	<iostream>
 	<sstream>
 	<cstdlib>
 	<ctime>
 	<string>
 	<vector>
+	<windows.h>
+	<iomanip>
+	<conio.h>
 	"ATMcard.h"
 	"ATMprocess.h"
+	"CenterScreen.h"
 
 1753817056 source:c:\users\boopi\documents\projects\cpp\atm system\sqlite3.c
 	<vxWorks.h>
@@ -85,24 +90,37 @@
 	<unicode/utf16.h>
 	<math.h>
 
-1755333351 source:c:\users\boopi\documents\projects\cpp\atm system\atmcard.cpp
+1756049354 source:c:\users\boopi\documents\projects\cpp\atm system\atmcard.cpp
 	"ATMcard.h"
 	<iostream>
 	<sstream>
 
-1755333333 c:\users\boopi\documents\projects\cpp\atm system\atmcard.h
+1755882542 c:\users\boopi\documents\projects\cpp\atm system\atmcard.h
 	"ATMsql.h"
 	<string>
 
-1755337873 source:c:\users\boopi\documents\projects\cpp\atm system\atmsql.cpp
+1756056370 source:c:\users\boopi\documents\projects\cpp\atm system\atmsql.cpp
 	"ATMsql.h"
+	"CenterScreen.h"
 	<iostream>
+	<sstream>
 	<string>
 
-1754503065 c:\users\boopi\documents\projects\cpp\atm system\atmsql.h
+1756055252 c:\users\boopi\documents\projects\cpp\atm system\atmsql.h
 	"sqlite3.h"
 	<string>
 
 1753817056 c:\users\boopi\documents\projects\cpp\atm system\sqlite3.h
 	<stdarg.h>
+
+1756033582 c:\users\boopi\documents\projects\cpp\atm system\centerscreen.h
+	<string>
+
+1756055843 source:c:\users\boopi\documents\projects\cpp\atm system\centerscreen.cpp
+	"CenterScreen.h"
+	<iostream>
+	<string>
+	<windows.h>
+	<sys/ioctl.h>
+	<unistd.h>
 

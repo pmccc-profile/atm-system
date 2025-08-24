@@ -22,10 +22,12 @@ class ATMsql
         bool dropTable();
         //executed automatically when called in sqlite3_exec() | will only execute if a matching record found
         //*data = your variable (target), argc = column count, **argv = table records/values, **colNames = column names
-        static int printRecord(void *data, int argc, char **argv, char **colNames);
+        static int callbackRecord(void *data, int argc, char **argv, char **colNames);
+        //executed automatically when callback has matching record(s) || outputs the record(s)
+        static int outputRecord(void *data, int argc, char **argv, char **colNames);
         //CRUD ********
         bool createRecord();
-        bool readRecord(string sqlRead);
+        bool readRecord(string sqlRead,int t);
         bool updateRecord(string sqlUpdate);
         bool deleteValue(string sqlDelete);
         //END *********

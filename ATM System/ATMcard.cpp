@@ -46,7 +46,7 @@ bool ATMcard::verifyAcctNum(){
     stringstream ss;
     ss<<"SELECT * FROM Account WHERE AccountNumber="<<accountNum<<";";
 
-    return readRecord(ss.str());
+    return readRecord(ss.str(),1);
 }
 bool ATMcard::verifyExpDate(){
     long long accountNum = getAcctNum();
@@ -55,7 +55,7 @@ bool ATMcard::verifyExpDate(){
     stringstream ss;
     ss<<"SELECT ExpirationDate FROM Account WHERE AccountNumber='"<<accountNum<<"' AND ExpirationDate > DATE('now');";
 
-    return readRecord(ss.str());
+    return readRecord(ss.str(),0);
 
 }
 bool ATMcard::verifyPin(){
@@ -66,6 +66,6 @@ bool ATMcard::verifyPin(){
     stringstream ss;
     ss<<"SELECT Pin FROM Account WHERE AccountNumber='"<<accountNum<<"' AND Pin="<<accountPin<<";";
 
-    return readRecord(ss.str());
+    return readRecord(ss.str(),0);
 }
 //END VERIFICATION **********************

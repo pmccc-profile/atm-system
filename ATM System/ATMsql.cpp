@@ -1,6 +1,8 @@
 #include "ATMsql.h"
+#include "CenterScreen.h"
 
 #include <iostream>
+#include <sstream>
 #include <string>
 
 using namespace std;
@@ -74,18 +76,43 @@ bool ATMsql::dropTable(){
 }
 
 //executed automatically when called in sqlite3_exec() | will only execute if a matching record found
-int ATMsql::printRecord(void *data, int argc, char **argv, char **colNames){
+int ATMsql::callbackRecord(void *data, int argc, char **argv, char **colNames){
     //cast into original source data type and reference: "int found=0"
     int *dFound = static_cast<int*>(data);
     *dFound = 1; //record found
 
-    cout<<"*******************************************************"<<endl;
-    //temporarily print everything for checking purposes
+    /*
     for (int i=0; i<argc; i++){
         //print per row: column, value (if null, print NULL)
         cout<<colNames[i]<<": "<<(argv[i] ? argv[i] : "NULL")<<endl;
     }
-    cout<<"*******************************************************"<<endl;
+    */
+
+    //return outputRecord(data,argc,argv,colNames);
+
+    //success like int main() return 0;
+    return 0;
+}\
+
+//executed automatically when called in sqlite3_exec() | will only execute if a matching record found
+int ATMsql::outputRecord(void *data, int argc, char **argv, char **colNames){
+    //cast into original source data type and reference: "int found=0"
+    int *dFound = static_cast<int*>(data);
+    *dFound = 1; //record found
+
+    CenterScreen center;
+
+    //cout<<"-------------------------------------------------------"<<endl;
+    //temporarily print everything for checking purposes
+    for (int i=0; i<argc; i++){
+
+        stringstream ss;
+        //print per row: column, value (if null, print NULL)
+        ss<<colNames[i]<<": "<<(argv[i] ? argv[i] : "NULL")<<endl;
+
+        center.positionCenter(ss.str());
+    }
+    center.positionCenter("-------------------------------------------------------");
 
     //success like int main() return 0;
     return 0;
@@ -111,17 +138,29 @@ bool ATMsql::createRecord(){
     return false;
 }
 
-bool ATMsql::readRecord(string sqlRead){
+bool ATMsql::readRecord(string sqlRead,int t){
 
     int dataFound = 0;
 
-    //&datafound is the void *data argument for printRecord()
-    if(sqlite3_exec(dbcon,sqlRead.c_str(),&printRecord,&dataFound,&errMsg)==SQLITE_OK){
-        return dataFound > 0;
-    }else{
-        cerr<<"READ error. "<<errMsg<<endl;
-        sqlite3_free(errMsg);
+    //t = a type of transaction: to display or not to display data for testing
+    if(t==0){
+        //&datafound is the void *data argument for callback()
+        if(sqlite3_exec(dbcon,sqlRead.c_str(),&callbackRecord,&dataFound,&errMsg)==SQLITE_OK){
+            return dataFound > 0;
+        }else{
+            cerr<<"READ error. "<<errMsg<<endl;
+            sqlite3_free(errMsg);
+        }
+    }else if(t==1){
+        //&datafound is the void *data argument for callback()
+        if(sqlite3_exec(dbcon,sqlRead.c_str(),&outputRecord,&dataFound,&errMsg)==SQLITE_OK){
+            return dataFound > 0;
+        }else{
+            cerr<<"READ error. "<<errMsg<<endl;
+            sqlite3_free(errMsg);
+        }
     }
+
     return false;
 }
 

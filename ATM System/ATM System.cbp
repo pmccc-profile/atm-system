@@ -40,6 +40,8 @@
 		<Unit filename="ATMprocess.h" />
 		<Unit filename="ATMsql.cpp" />
 		<Unit filename="ATMsql.h" />
+		<Unit filename="CenterScreen.cpp" />
+		<Unit filename="CenterScreen.h" />
 		<Unit filename="main.cpp" />
 		<Unit filename="sqlite3.c">
 			<Option compilerVar="CC" />

@@ -35,7 +35,7 @@ bool ATMprocess::balanceCheck(long long cardAcct){
     return readRecord(ss.str(),1);
 }
 
-bool ATMprocess::printReceipt(long long cardNumber){
+bool ATMprocess::printReceipt(long long cardNumber, int t){
 
     CenterScreen center;
 
@@ -50,6 +50,25 @@ bool ATMprocess::printReceipt(long long cardNumber){
     dt<<"Date: "<<put_time(ltm, "%Y-%m-%d %H:%M:%S");
     center.positionCenter(dt.str());
     cout<<endl<<endl;
+
+    if(t==1){
+        center.positionCenter("Transaction: Balance");
+        cout<<endl;
+    }else if(t==2){
+        string wa = "Amount: " + to_string(withdrawAmount);
+
+        center.positionCenter("Transaction: Withdrawal");
+        cout<<endl;
+        center.positionCenter(wa);
+        cout<<endl;
+    }else if(t==3){
+        string da = "Amount: " + to_string(depositAmount);
+
+        center.positionCenter("Transaction: Deposit");
+        cout<<endl;
+        center.positionCenter(da);
+        cout<<endl;
+    }
 
     stringstream ss;
     ss<<"SELECT AccountNumber, AccountBalance FROM Account WHERE AccountNumber = "<<cardNumber<<";";

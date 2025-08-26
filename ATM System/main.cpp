@@ -22,9 +22,9 @@ bool pinVerification(ATMcard &aCard);
 bool expDateVerification(ATMcard &aCard);
 
 bool balanceCheck(ATMprocess &aProc);
-void printOR(ATMprocess &aProc, long long cardAccount);
-void withdraw(ATMprocess &aProc);
-void deposit(ATMprocess &aProc);
+bool printOR(ATMprocess &aProc, long long cardAccount, int t);
+bool withdraw(ATMprocess &aProc);
+bool deposit(ATMprocess &aProc);
 void clrscrn();
 void positionCenter(const string &text);
 
@@ -43,7 +43,7 @@ int main(){
     int pinAttempts = 0;
     bool isExpired = true;
 
-    int loopMain=1;
+    bool loopMain=true;
 
     do{
         clrscrn();
@@ -96,7 +96,7 @@ int main(){
                     if(verifyExpDate){
                         //card is still valid and not yet expired
                         isExpired = false;
-                        loopMain = 0;
+                        loopMain = false;
                         break;
                     }else{
                         cout<<endl;
@@ -104,7 +104,7 @@ int main(){
                         cout<<endl;
                         center.positionCenter("Please visit the nearest branch for renewal.");
                         cout<<endl<<endl;
-                        loopMain = 0;
+                        loopMain = false;
                         break;
                     }
                 }else{
@@ -120,16 +120,16 @@ int main(){
                 cout<<endl;
                 center.positionCenter("Your account has been locked out.");
                 cout<<endl<<endl;
-                loopMain = 0;
+                loopMain = false;
                 break;
             }
         }else{
             center.positionCenter("Unrecognized account.");
             cout<<endl<<endl;
-            loopMain = 0;
+            loopMain = false;
             break;
         }
-    }while(loopMain==1);
+    }while(loopMain);
 
     //CODE FOR ATM PROCESSES STARTS HERE:
     ATMprocess aProc;
@@ -139,12 +139,12 @@ int main(){
 
     if(!isExpired){
 
-        int loopTrans=1;
+        bool loopTrans=true;
 
         do{
-
             clrscrn();
 
+            bool printReceipt=false;
             int trans;
 
             center.positionCenter("--------------------------");
@@ -170,29 +170,39 @@ int main(){
                 case 1:
                     clrscrn();
                     aProc.balanceCheck(cardNumAcct);
-                    printOR(aProc, cardNumAcct);
+                    if(printOR(aProc, cardNumAcct, 1)) printReceipt = true;
                     break;
                 case 2:
                     clrscrn();
-                    withdraw(aProc);
-                    printOR(aProc, cardNumAcct);
+                    //withdraw(aProc);
+                    while(!withdraw(aProc)){
+                        getch();
+                        clrscrn();
+                    }
+                    if(printOR(aProc, cardNumAcct, 2)) printReceipt = true;
                     break;
                 case 3:
                     clrscrn();
-                    deposit(aProc);
-                    printOR(aProc, cardNumAcct);
+                    //deposit(aProc);
+                    while(!deposit(aProc)){
+                        getch();
+                        clrscrn();
+                    }
+                    if(printOR(aProc, cardNumAcct, 3)) printReceipt = true;
                     break;
                 case 4:
-                    loopTrans=0;
+                    cout<<endl;
+                    loopTrans=false;
                     break;
                 default:
                     center.positionCenter("Invalid input.");
                     cout<<endl;
             }
 
-            if(loopTrans==1){
+            if(loopTrans){
 
-                getch();
+                if(printReceipt) getch();
+
                 clrscrn();
 
                 int newTrans;
@@ -214,7 +224,7 @@ int main(){
                 break;
             }
 
-        }while(loopTrans==1);
+        }while(loopTrans);
     }
     center.positionCenter("-------------------------------------------------------");
     cout<<endl;
@@ -267,10 +277,11 @@ bool expDateVerification(ATMcard &aCard){
     }
 }
 
-void printOR(ATMprocess &aProc, long long cardAccount){
+bool printOR(ATMprocess &aProc, long long cardAccount, int t){
 
     CenterScreen center;
 
+    int transType = t;
     int ans;
 
     cout<<endl<<endl;
@@ -281,8 +292,8 @@ void printOR(ATMprocess &aProc, long long cardAccount){
     center.positionCenter("Enter Number: ");
     cin>>ans;
 
-    clrscrn();
     if(ans==1){
+        clrscrn();
         center.positionCenter("*******************************************************");
         cout<<endl;
         center.positionCenter("BANK RECEIPT");
@@ -291,7 +302,11 @@ void printOR(ATMprocess &aProc, long long cardAccount){
         cout<<endl;
         center.positionCenter("-------------------------------------------------------");
         cout<<endl;
-        aProc.printReceipt(cardAccount);
+        center.positionCenter("TRANSACTION RECORD");
+        cout<<endl;
+        center.positionCenter("-------------------------------------------------------");
+        cout<<endl;
+        aProc.printReceipt(cardAccount, transType);
         cout<<endl;
         center.positionCenter("*******************************************************");
         cout<<endl;
@@ -299,10 +314,14 @@ void printOR(ATMprocess &aProc, long long cardAccount){
         cout<<endl;
         center.positionCenter("*******************************************************");
         cout<<endl;
+
+        return true;
     }
+
+    return false;
 }
 
-void withdraw(ATMprocess &aProc){
+bool withdraw(ATMprocess &aProc){
 
     CenterScreen center;
 
@@ -322,10 +341,14 @@ void withdraw(ATMprocess &aProc){
         cout<<endl<<endl;
         center.positionCenter("Insufficient funds. Try Again");
         cout<<endl;
+
+        return false;
     }
+
+    return true;
 }
 
-void deposit(ATMprocess &aProc){
+bool deposit(ATMprocess &aProc){
 
     CenterScreen center;
 
@@ -345,7 +368,11 @@ void deposit(ATMprocess &aProc){
         cout<<endl<<endl;
         center.positionCenter("Cannot deposit. Try Again");
         cout<<endl;
+
+        return false;
     }
+
+    return true;
 }
 
 void clrscrn(){

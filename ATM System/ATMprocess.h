@@ -20,7 +20,7 @@ class ATMprocess : public ATMcard
         void setDepositAmt(int depositAmt);
         int getDepositAmt();
 
-        bool printReceipt(long long cardNumber);
+        bool printReceipt(long long cardNumber, int t);
 
         //for withdraw and deposit
         bool updateBalance(char t);
